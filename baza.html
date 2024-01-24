@@ -30,7 +30,6 @@ async function getTitles() {
 
     const userInput = prompt("Wybor: " + choices);
 
-    // Sprawdź, czy userInput jest liczbą i czy jest w zakresie tablicy
     if (!isNaN(userInput) && userInput >= 0 && userInput < dataT.Filmy.length) {
         const selectedMovie = dataT.Filmy[userInput];
         document.write("<h1>Tytul wybranego filmu to: "+dataT.Filmy[userInput].Tytul+"</h1><hx>")
@@ -39,9 +38,9 @@ async function getTitles() {
         document.write("<h2>Rezyser: "+data.Filmy[userInput].Rezyser+"</h2><hx>")
         document.write("<h4>UUID: "+data.Filmy[userInput].ID+"</h4><hx>")
 
-        // Tutaj możesz dalej działać z wybranym filmem
     } else {
-        console.log("Nieprawidłowy wybór.");
+        alert("Nieprawidłowy wybór.");
+        location.reload();
     }
 }
 
