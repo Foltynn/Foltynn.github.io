@@ -13,16 +13,43 @@
             const response = await fetch(api_url);
             const data = await response.json();
             console.log(data);
-        }
+
+        const tytuly = "https://apparent-scorpion-37.hasura.app/api/rest/tytulyonly";
+
+async function getTitles() {
+    const responseT = await fetch(tytuly);
+    const dataT = await responseT.json();
+    console.log(dataT);
+
+    let choices = "";
+    for (let i = 0; i < dataT.Filmy.length; i++) {
+        choices += i + " - " + dataT.Filmy[i].Tytul + "\n";
+      //  console.log("Wybierz swoj film:\n " + i + " - " + dataT.Filmy[i].Tytul);
+    }
+
+
+    const userInput = prompt("Wybor: " + choices);
+
+    // Sprawdź, czy userInput jest liczbą i czy jest w zakresie tablicy
+    if (!isNaN(userInput) && userInput >= 0 && userInput < dataT.Filmy.length) {
+        const selectedMovie = dataT.Filmy[userInput];
+        document.write("<h1>Tytul wybranego filmu to: "+dataT.Filmy[userInput].Tytul+"</h1><hx>")
+        document.write("<h2>Czas trwania: "+data.Filmy[userInput].Czas_trwania+" minut</h2><hx>")
+        document.write("<h2>Gatunek: "+data.Filmy[userInput].Gatunek+"</h2><hx>")
+        document.write("<h2>Rezyser: "+data.Filmy[userInput].Rezyser+"</h2><hx>")
+        document.write("<h4>UUID: "+data.Filmy[userInput].ID+"</h4><hx>")
+
+        // Tutaj możesz dalej działać z wybranym filmem
+    } else {
+        console.log("Nieprawidłowy wybór.");
+    }
+}
+
+getTitles();
+    }
         getMovies();
 
-        const tytuly = "https://apparent-scorpion-37.hasura.app/api/rest/tytulyonly"
-        async function getTitles(){
-            const responseT = await fetch(tytuly);
-            const dataT = await responseT.json();
-            console.log(dataT);
-        }
-        getTitles();
+
 
     </script>
 </body>
