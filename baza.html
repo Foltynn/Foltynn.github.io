@@ -27,8 +27,15 @@ async function getTitles() {
       //  console.log("Wybierz swoj film:\n " + i + " - " + dataT.Filmy[i].Tytul);
     }
 
+    document.getElementById("wyswietalnie").addEventListener("click", wyswietalnie);
 
+    document.getElementById("dodawanie").addEventListener("click", dodawanie);
+    document.getElementById("usuwanie").addEventListener("click", usuwanie);
+    document.getElementById("edytowanie").addEventListener("click", edytowanie);
+
+    function wyswietalnie(){
     const userInput = prompt("Wybor: " + choices);
+
 
     if (!isNaN(userInput) && userInput >= 0 && userInput < dataT.Filmy.length) {
         const selectedMovie = dataT.Filmy[userInput];
@@ -44,6 +51,22 @@ async function getTitles() {
     }
 }
 
+                function dodawanie() {
+                    alert("Wywołanie dodawania działa!");
+                }
+
+                function usuwanie() {
+                    alert("Wywołanie usuwania działa!");
+                }
+
+                function edytowanie() {
+                    alert("Wywołanie edytowania działa!");
+                }
+
+
+}
+
+
 getTitles();
     }
         getMovies();
@@ -51,5 +74,13 @@ getTitles();
 
 
     </script>
+
+        <h1><button id="wyswietalnie">Wyswietlenie rekordow</button></h1>
+
+        <button id="dodawanie">Dodawanie rekordów</button>
+        <button id="usuwanie">Usuwanie rekordów</button>
+        <button id="edytowanie">Edytowanie rekordów</button>
+    
+
 </body>
 </html>
