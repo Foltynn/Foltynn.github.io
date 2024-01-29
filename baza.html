@@ -7,80 +7,123 @@
 </head>
 <body>
     <script>
+        const api_url = "https://apparent-scorpion-37.hasura.app/api/rest/Filmy";
 
-        const api_url = "https://apparent-scorpion-37.hasura.app/api/rest/Filmy"
-        async function getMovies(){
+        async function getMovies() {
             const response = await fetch(api_url);
             const data = await response.json();
             console.log(data);
+        
 
         const tytuly = "https://apparent-scorpion-37.hasura.app/api/rest/tytulyonly";
 
-async function getTitles() {
-    const responseT = await fetch(tytuly);
-    const dataT = await responseT.json();
-    console.log(dataT);
+        async function getTitles() {
+            const responseT = await fetch(tytuly);
+            const dataT = await responseT.json();
+            console.log(dataT);
 
-    let choices = "";
-    for (let i = 0; i < dataT.Filmy.length; i++) {
-        choices += i + " - " + dataT.Filmy[i].Tytul + "\n";
-      //  console.log("Wybierz swoj film:\n " + i + " - " + dataT.Filmy[i].Tytul);
-    }
+            document.getElementById("wyswietalnie").addEventListener("click", wyswietalnie);
+            document.getElementById("dodawanie").addEventListener("click", dodawanie);
+            document.getElementById("usuwanie").addEventListener("click", usuwanie);
+            document.getElementById("edytowanie").addEventListener("click", edytowanie);
 
-    document.getElementById("wyswietalnie").addEventListener("click", wyswietalnie);
+            let choices = "";
+            for (let i = 0; i < dataT.Filmy.length; i++) {
+                choices += i + " - " + dataT.Filmy[i].Tytul + "\n";
+            }
 
-    document.getElementById("dodawanie").addEventListener("click", dodawanie);
-    document.getElementById("usuwanie").addEventListener("click", usuwanie);
-    document.getElementById("edytowanie").addEventListener("click", edytowanie);
-
-    function wyswietalnie(){
-    const userInput = prompt("Wybor: " + choices);
+            function wyswietalnie(){
+                const userInput = prompt("Wybor: " + choices);
 
 
-    if (!isNaN(userInput) && userInput >= 0 && userInput < dataT.Filmy.length) {
-        const selectedMovie = dataT.Filmy[userInput];
-        document.write("<h1>Tytul wybranego filmu to: "+dataT.Filmy[userInput].Tytul+"</h1><hx>")
-        document.write("<h2>Czas trwania: "+data.Filmy[userInput].Czas_trwania+" minut</h2><hx>")
-        document.write("<h2>Gatunek: "+data.Filmy[userInput].Gatunek+"</h2><hx>")
-        document.write("<h2>Rezyser: "+data.Filmy[userInput].Rezyser+"</h2><hx>")
-        document.write("<h4>UUID: "+data.Filmy[userInput].ID+"</h4><hx>")
+                if (!isNaN(userInput) && userInput >= 0 && userInput < dataT.Filmy.length) {
+                    const selectedMovie = dataT.Filmy[userInput];
+                    document.write("<h1>Tytul wybranego filmu to: "+dataT.Filmy[userInput].Tytul+"</h1><hx>")
+                    document.write("<h2>Czas trwania: "+data.Filmy[userInput].Czas_trwania+" minut</h2><hx>")
+                    document.write("<h2>Gatunek: "+data.Filmy[userInput].Gatunek+"</h2><hx>")
+                    document.write("<h2>Rezyser: "+data.Filmy[userInput].Rezyser+"</h2><hx>")
+                    document.write("<h4>UUID: "+data.Filmy[userInput].ID+"</h4><hx>")
 
-    } else {
-        alert("Nieprawidłowy wybór.");
-        location.reload();
-    }
-}
 
-                function dodawanie() {
-                    alert("Wywołanie dodawania działa!");
+                } else {
+                    alert("Nieprawidłowy wybór.");
+                    location.reload();
                 }
+            }
 
-                function usuwanie() {
-                    alert("Wywołanie usuwania działa!");
+            function dodawanie() {
+                let inTytul = prompt("Podaj tytuł filmu: ");
+                let inGatunek = prompt("Podaj gatunek filmu: ");
+                let inRezyser = prompt("Podaj imię i nazwisko reżysera: ");
+                let inCzas = prompt("Podaj czas trwania filmu w minutach: ");
+
+                if (inTytul && inGatunek && inRezyser && inCzas) {
+                    // Wywołaj funkcję z pobranymi od użytkownika danymi
+                    dodajDaneDoBazy(inTytul, inGatunek, inRezyser, parseInt(inCzas));
+                } else {
+                    alert("Wprowadź wszystkie dane!");
                 }
+            }
 
-                function edytowanie() {
-                    alert("Wywołanie edytowania działa!");
-                }
+            function usuwanie() {
+                alert("Wywołanie usuwania działa!");
+            }
 
+            function edytowanie() {
+                alert("Wywołanie edytowania działa!");
+            }
 
-}
+            function dodajDaneDoBazy(tytul, gatunek, rezyser, czas_trwania) {
+                const endpoint = "https://apparent-scorpion-37.hasura.app/v1/graphql";
+                const query = `
+                  mutation AddRecord($tytul: String!, $gatunek: String!, $rezyser: String!, $czas_trwania: Int!) {
+                    insert_Filmy(objects: [{
+                      Tytul: $tytul,
+                      Gatunek: $gatunek,
+                      Rezyser: $rezyser,
+                      Czas_trwania: $czas_trwania
+                    }]) {
+                      returning {
+                        Tytul
+                        Rezyser
+                      }
+                    }
+                  }
+                `;
 
+                const variables = {
+                    tytul: tytul,
+                    gatunek: gatunek,
+                    rezyser: rezyser,
+                    czas_trwania: czas_trwania
+                };
 
-getTitles();
+                fetch(endpoint, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        query,
+                        variables,
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error("Błąd:", error));
+            }
+        }
+
+        getTitles();
     }
         getMovies();
 
-
-
     </script>
 
-        <h1><button id="wyswietalnie">Wyswietlenie rekordow</button></h1>
+    <h1><button id="wyswietalnie">Wyswietlenie rekordow</button></h1>
 
-        <button id="dodawanie">Dodawanie rekordów</button>
-        <button id="usuwanie">Usuwanie rekordów</button>
-        <button id="edytowanie">Edytowanie rekordów</button>
-    
-
+    <button id="dodawanie">Dodawanie rekordów</button>
+    <button id="usuwanie">Usuwanie rekordów</button>
+    <button id="edytowanie">Edytowanie rekordów</button>
 </body>
 </html>
