@@ -47,7 +47,6 @@
 
                 } else {
                     alert("Nieprawidłowy wybór.");
-                    location.reload();
                 }
             }
 
@@ -63,22 +62,18 @@
                 } else {
                     alert("Wprowadź wszystkie dane!");
                 }
+
             }
 
             function usuwanie() {
 
+                let wyborUUID = "";
+            for (let i = 0; i < data.Filmy.length; i++) {
+                wyborUUID += i + " - " + data.Filmy[i].Tytul + "\n";
+            }
 
-
-
-
-                
-                let UUID = prompt
-
-
-
-
-
-
+                let wybranyTytul = prompt("Ktory tytul chcesz usunac z listy? \n "+wyborUUID);
+                let UUID = data.Filmy[wybranyTytul].ID
 
                 const endpoint = "https://apparent-scorpion-37.hasura.app/api/rest/Filmy/" + UUID;
 
@@ -96,7 +91,6 @@
                 }
             })
             .catch(error => console.error("Błąd:", error));
-        }
 
             }
 
