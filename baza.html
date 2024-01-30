@@ -75,7 +75,7 @@
                 let wybranyTytul = prompt("Ktory tytul chcesz usunac z listy? \n "+wyborUUID);
                 let UUID = data.Filmy[wybranyTytul].ID
 
-                const endpoint = "https://apparent-scorpion-37.hasura.app/api/rest/Filmy/" + UUID;
+                const endpoint = "https://apparent-scorpion-37.hasura.app/api/rest/Filmy/" +UUID;
 
             fetch(endpoint, {
                 method: "DELETE",
@@ -95,8 +95,65 @@
             }
 
             function edytowanie() {
-                alert("Wywołanie edytowania działa!");
+
+                let wyborUUID = "";
+            for (let i = 0; i < data.Filmy.length; i++) {
+                wyborUUID += i + " - " + data.Filmy[i].Tytul + "\n";
             }
+
+                let wybranyTytul = prompt("Ktory tytul chcesz edytowac? \n "+wyborUUID);
+                let UUID = data.Filmy[wybranyTytul].ID
+            const endpoint = "https://apparent-scorpion-37.hasura.app/v1/graphql";
+
+
+            let zmTytul = prompt("Zedytowany tytul: ");           
+            let zmGatunek = prompt("Zedytowany gatunek: ");
+            let zmRezyser = prompt("Zedytowany rezyser: ");
+            let zmCzas_trwania = prompt("Zedytowany czas trwania: ");
+
+            const query = `mutation update_Filmy_by_pk($ID: uuid!, $object: Filmy_set_input!) {
+                update_Filmy_by_pk(pk_columns: {ID: $ID}, _set: $object) {
+                    Czas_trwania
+                    Gatunek
+                    ID
+                    Rezyser
+                    Tytul
+                }
+            }`;
+
+            fetch(endpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    query,
+                    variables: {
+                        ID: UUID,
+                        object: {
+                            Czas_trwania: zmCzas_trwania,
+                            Gatunek: zmGatunek,
+                            Rezyser: zmRezyser,
+                            Tytul: zmTytul
+                        }
+                    },
+                }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Record updated successfully:', data);
+                // Handle success, if needed
+            })
+            .catch(error => {
+                console.error('Error updating record:', error);
+                // Handle error, if needed
+            });
+        }  
 
             function dodajDaneDoBazy(tytul, gatunek, rezyser, czas_trwania) {
                 const endpoint = "https://apparent-scorpion-37.hasura.app/v1/graphql";
