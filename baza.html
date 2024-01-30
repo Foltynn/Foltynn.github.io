@@ -66,12 +66,38 @@
             }
 
             function usuwanie() {
-            
+
 
 
 
 
                 
+                let UUID = prompt
+
+
+
+
+
+
+
+                const endpoint = "https://apparent-scorpion-37.hasura.app/api/rest/Filmy/" + UUID;
+
+            fetch(endpoint, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log("Rekord został usunięty.");
+                } else {
+                    console.error("Błąd podczas usuwania rekordu.");
+                }
+            })
+            .catch(error => console.error("Błąd:", error));
+        }
+
             }
 
             function edytowanie() {
